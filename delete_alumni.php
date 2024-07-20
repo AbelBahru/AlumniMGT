@@ -2,19 +2,22 @@
 include 'db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
-    $id = $_POST['id'];
+    $alumniID = $_POST['id'];
 
-    $sql = "DELETE FROM alumni WHERE alumniID = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) {
-        echo "Record deleted successfully";
+    // deletes the dependent records from the user table
+    $sql = "DELETE FROM user WHERE alumniID = '$alumniID'";
+    if ($conn->query($sql) === TRUE) {
+        // deletes the alumni record
+        $sql = "DELETE FROM alumni WHERE alumniID = '$alumniID'";
+        if ($conn->query($sql) === TRUE) {
+            echo "Record deleted successfully";
+        } else {
+            echo "Error deleting alumni record: " . $conn->error;
+        }
     } else {
-        echo "Error deleting record: " . $stmt->error;
+        echo "Error deleting user records: " . $conn->error;
     }
 
-    $stmt->close();
     $conn->close();
 }
 ?>

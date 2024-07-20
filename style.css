@@ -229,3 +229,7 @@ button {
 button:hover {
     background-color: #5830b4;
 }
+
+html {
+    scroll-behavior: smooth;
+}
